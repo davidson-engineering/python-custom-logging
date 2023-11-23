@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------
 # Created By  : Matthew Davidson
-# Created Date: 2023-01-23
-# version ='1.0'
+# Created Date: 2023-11-22
 # ---------------------------------------------------------------------------
-"""a_short_module_description"""
+"""A module to enable customized logging to the console and to a log file."""
 # ---------------------------------------------------------------------------
 
 # - Extend 'setup_logging()' to create directory path for logfile -> see code

@@ -1,24 +1,24 @@
 [project]
-name = "project_or_module_name"
-description = "A_short_description"
+name = "log_formatter"
+description = "A module to enable customized logging to the console and to a log file"
 
 # If a project, then you can specify version here
 # version = "0.0.0"
 # If a module, then fetch version dynamically (see [tool.setuptools.dynamic] below)
-# dynamic = ["version"]
+dynamic = ["version"]
 
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [
-  {email = "matthew.davidson@generalfusion.com"},
+  {email = "matthew@davidson.engineering"},
   {name = "Matthew Davidson"}
 ]
 
 classifiers = [
     "Development Status :: 1 - Planning",
     "Operating System :: Microsoft :: Windows",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.9",
 ]
 
 # dependencies = [
@@ -27,8 +27,8 @@ classifiers = [
 # ]
 
 # If a module, then use fetch version from src/module_name/__init__.py
-# [tool.setuptools.dynamic]
-# version = {attr = "module_name.__version__"}
+[tool.setuptools.dynamic]
+version = {attr = "log_formatter.__version__"}
 
 [project.optional-dependencies]
 test = [
