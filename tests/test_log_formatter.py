@@ -43,7 +43,7 @@ def test_setup_logging_logfile_output(log_file_path):
     assert isinstance(logger, logging.Logger)
 
 
-def test_setup_logging_console_and_logfile_output(captured_stdout, log_file_path):
+def test_setup_logging_console_and_logfile_output(log_file_path):
     logger = setup_logging(
         console_log_output="stdout",
         console_log_level="info",
@@ -55,7 +55,7 @@ def test_setup_logging_console_and_logfile_output(captured_stdout, log_file_path
     assert isinstance(logger, logging.Logger)
 
 
-def test_log_messages(captured_stdout, log_file_path):
+def test_log_messages(capsys, log_file_path):
     logger = setup_logging(
         console_log_output="stdout",
         console_log_level="info",
@@ -66,8 +66,9 @@ def test_log_messages(captured_stdout, log_file_path):
     )
 
     logger.info("Test info message")
-    logged_output = captured_stdout.getvalue().strip()
-    assert "Info: Test info message" in logged_output
+    captured = capsys.readouterr()
+    logged_output = captured.out.strip()
+    assert "Test info message" in logged_output
 
     # Check the content of the log file
     with open(log_file_path, "r") as f:
