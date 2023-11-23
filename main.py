@@ -12,7 +12,7 @@ import os
 import logging
 import sys
 
-from log_formatter.log_formatter import setup_logging
+from log_formatter import setup_logging
 
 
 # Main function
