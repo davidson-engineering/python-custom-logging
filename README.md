@@ -21,3 +21,17 @@ logging.warning("Warning message")
 logging.error("Error message")
 logging.critical("Critical message")
 ```
+
+```console
+Warning: Warning message
+Error: Error message
+Critical: Critical message
+```
+
+```toml
+[1700718790] [MainThread] [DEBUG   ] Debug message
+[1700718790] [MainThread] [INFO    ] Info message
+[1700718790] [MainThread] [WARNING ] Warning message
+[1700718790] [MainThread] [ERROR   ] Error message
+[1700718790] [MainThread] [CRITICAL] Critical message
+```
