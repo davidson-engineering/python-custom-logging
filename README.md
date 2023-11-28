@@ -2,6 +2,8 @@
 A module to enable customized logging to the console and to a log file
 
 ```python
+from log_formatter import setup_logging
+
 setup_logging(
     console_log_output="stdout",
     console_log_level="warning",
