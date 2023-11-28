@@ -21,13 +21,13 @@ logging.warning("Warning message")
 logging.error("Error message")
 logging.critical("Critical message")
 ```
-Console Output:
+Console output:
 ```
 Warning: Warning message
 Error: Error message
 Critical: Critical message
 ```
-logfile.log output
+<i>logfile.log</i> output
 ```
 [1700718790] [MainThread] [DEBUG   ] Debug message
 [1700718790] [MainThread] [INFO    ] Info message
