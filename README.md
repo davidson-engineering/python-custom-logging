@@ -11,7 +11,7 @@ setup_logging(
     logfile_file="logfile.log",
     logfile_log_level="debug",
     logfile_log_color=False,
-    log_line_template="%(color_on)s[%(created)d] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s"
+    log_line_template="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s"
 )
 
 # Log some messages
