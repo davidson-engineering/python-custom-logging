@@ -11,6 +11,7 @@ setup_logging(
     logfile_file=f"logfile.log",
     logfile_log_level="debug",
     logfile_log_color=False,
+    logfile_log_datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 # Log some messages
@@ -28,9 +29,9 @@ Critical: Critical message
 ```
 <i>logfile.log</i> output
 ```
-[231204|213440.662] [DEBUG   ] Debug message
-[231204|213440.662] [INFO    ] Info message
-[231204|213440.663] [WARNING ] Warning message
-[231204|213440.663] [ERROR   ] Error message
-[231204|213440.663] [CRITICAL] Critical message
+[2023-12-04 21:40:17.290] [DEBUG   ] Debug message
+[2023-12-04 21:40:17.291] [INFO    ] Info message
+[2023-12-04 21:40:17.291] [WARNING ] Warning message
+[2023-12-04 21:40:17.291] [ERROR   ] Error message
+[2023-12-04 21:40:17.291] [CRITICAL] Critical message
 ```
