@@ -4,7 +4,10 @@
 # Created By  : Matthew Davidson
 # Created Date: 2023-11-22
 # ---------------------------------------------------------------------------
-"""A module to enable customized logging to the console and to a log file."""
+"""
+A module to enable customized logging to the console and to a log file.
+Based on original code by fonic - https://github.com/fonic
+"""
 # ---------------------------------------------------------------------------
 
 # - Extend 'setup_logging()' to create directory path for logfile -> see code
@@ -23,8 +26,6 @@ class LogFormatter(logging.Formatter):
         logging.CRITICAL: "\033[1;35m",  # bright/bold magenta
         logging.ERROR: "\033[1;31m",  # bright/bold red
         logging.WARNING: "\033[1;33m",  # bright/bold yellow
-        # logging.INFO:     "\033[0;37m", # white / light gray
-        # logging.DEBUG:    "\033[1;30m"  # bright/bold black / dark gray
         logging.INFO: "\033[1;37m",  # bright/bold white
         logging.DEBUG: "\033[0;37m",  # white / light gray
     }
@@ -57,7 +58,8 @@ def setup_logging(
     logfile_file=None,
     logfile_log_level="debug",
     logfile_log_color=False,
-    logfile_log_template="%(color_on)s[%(created)d] [%(levelname)-8s] %(message)s%(color_off)s",
+    logfile_log_template="%(color_on)s[%(asctime)s] [%(levelname)-8s] %(message)s%(color_off)s",
+    logfile_log_datefmt="%Y%m%d|%H:%M:%S.%f",
     logfile_truncate=False,
 ):
     # Create logger
@@ -124,7 +126,7 @@ def setup_logging(
 
         # Create and set formatter, add log file handler to logger
         logfile_formatter = LogFormatter(
-            fmt=logfile_log_template, color=logfile_log_color
+            fmt=logfile_log_template, color=logfile_log_color, datefmt=logfile_log_datefmt
         )
         logfile_handler.setFormatter(logfile_formatter)
         logger.addHandler(logfile_handler)
@@ -144,7 +146,7 @@ def main():
         logfile_file=f"{script_name}.log",
         logfile_log_level="debug",
         logfile_log_color=False,
-        log_line_template="%(color_on)s[%(created)d] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
+        log_line_template="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
     ):
         print("Failed to setup logging, aborting.")
         return 1
