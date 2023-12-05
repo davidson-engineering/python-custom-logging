@@ -58,8 +58,8 @@ def setup_logging(
     logfile_file=None,
     logfile_log_level="debug",
     logfile_log_color=False,
-    logfile_log_template="%(color_on)s[%(asctime)s] [%(levelname)-8s] %(message)s%(color_off)s",
-    logfile_log_datefmt="%Y%m%d|%H:%M:%S.%f",
+    logfile_log_template="%(color_on)s[%(asctime)s.%(msecs)03d] [%(levelname)-8s] %(message)s%(color_off)s",
+    logfile_log_datefmt="%y%m%d|%0H%0M%0S",
     logfile_truncate=False,
 ):
     # Create logger
@@ -126,7 +126,9 @@ def setup_logging(
 
         # Create and set formatter, add log file handler to logger
         logfile_formatter = LogFormatter(
-            fmt=logfile_log_template, color=logfile_log_color, datefmt=logfile_log_datefmt
+            fmt=logfile_log_template,
+            color=logfile_log_color,
+            datefmt=logfile_log_datefmt,
         )
         logfile_handler.setFormatter(logfile_formatter)
         logger.addHandler(logfile_handler)
@@ -146,7 +148,7 @@ def main():
         logfile_file=f"{script_name}.log",
         logfile_log_level="debug",
         logfile_log_color=False,
-        log_line_template="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
+        logfile_log_template="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
     ):
         print("Failed to setup logging, aborting.")
         return 1
