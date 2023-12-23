@@ -19,6 +19,35 @@ import sys
 import logging
 import os
 
+default_params_timedrotatingfilehandler = dict(
+    when="midnight",
+    interval=1,
+    backupCount=7,
+    encoding=None,
+    delay=False,
+    utc=False,
+    atTime=None,
+    errors=None,
+)
+
+default_params_filehandler = dict(
+    mode="a",
+    encoding=None,
+    delay=False,
+    errors=None,
+
+)
+
+default_params_streamhandler = dict(
+    stream=None,
+)
+
+default_params_formatter = dict(
+    fmt="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    color=False
+)
+
 
 # Logging formatter supporting colored output
 class LogFormatter(logging.Formatter):
@@ -47,20 +76,27 @@ class LogFormatter(logging.Formatter):
         return super(LogFormatter, self).format(record, *args, **kwargs)
 
 
+def merge_logging_formats(default_format, handler_format):
+    # function to merge a logging.Formatter object with some default format options in a dioct
+    # returns a logging.Formatter with the merged format options
+
+    # get the default format options
+    default_format_dict = default_format.__dict__
+    # get the handler format options
+    handler_format_dict = handler_format.__dict__
+    # merge the two dicts
+    merged_format_dict = default_format_dict.update(handler_format_dict)
+    # create a logging.Formatter object with the merged format options
+    merged_format = logging.Formatter(**merged_format_dict)
+    # return the logging.Formatter object
+    return merged_format
+
 # Setup logging
 # NOTE: logger_name == None -> root logger
-def setup_logging(
+def setup_logger(
     logger_name=None,
-    console_log_output="stdout",
-    console_log_level="debug",
-    console_log_color=False,
-    console_log_template="%(color_on)s%(levelname2)s: %(message)s%(color_off)s",
-    logfile_file=None,
-    logfile_log_level="debug",
-    logfile_log_color=False,
-    logfile_log_template="%(color_on)s[%(asctime)s.%(msecs)03d] [%(levelname)-8s] %(message)s%(color_off)s",
-    logfile_log_datefmt="%y%m%d|%0H%0M%0S",
-    logfile_truncate=False,
+    default_handler_format = None,
+    handlers=None
 ):
     # Create logger
     logger = logging.getLogger(logger_name)
@@ -68,71 +104,39 @@ def setup_logging(
     # Set global log level to 'debug' (required for handler levels to work)
     logger.setLevel(logging.DEBUG)
 
-    # Console
-    if console_log_output != None:
+    if default_handler_format is None:
+        default_handler_format = LogFormatter(
+            **default_params_formatter,
+        ).__dict__
+
+    if handlers:
+        for handler in handlers:
+            if handler.formatter:
+                handler_format = default_handler_format.update(handler.formatter.__dict__)
+            else:
+                handler_format = default_handler_format
+            handler_format = LogFormatter(
+                **default_handler_format
+            )
+            handler.setFormatter(handler_format)
+            logger.addHandler(handler)
+    else:
         # Create console handler
-        console_log_output = console_log_output.lower()
-        if console_log_output == "stdout":
-            console_log_output = sys.stdout
-        elif console_log_output == "stderr":
-            console_log_output = sys.stderr
-        else:
-            raise ValueError("invalid console log output: '%s'" % console_log_output)
-        try:
-            console_handler = logging.StreamHandler(console_log_output)
-        except Exception as exception:
-            raise Exception(
-                "failed to set up console handler: %s" % str(exception)
-            ) from exception
-
-        # Set console log level
-        try:
-            console_handler.setLevel(
-                console_log_level.upper()
-            )  # only accepts uppercase level names
-        except ValueError as valueerror:
-            raise ValueError(
-                "invalid console log level: '%s'" % console_log_level
-            ) from valueerror
-
-        # Create and set formatter, add console handler to logger
-        console_formatter = LogFormatter(
-            fmt=console_log_template, color=console_log_color
+        console_handler = logging.StreamHandler(**default_params_streamhandler)
+        console_handler_line_format = console_handler.fmt or default_line_format
+        console_handler_date_format = console_handler.datefmt or default_date_format
+        console_handler_color = console_handler.color or log_color
+        console_handler_format = LogFormatter(
+            fmt=console_handler_line_format,
+            datefmt=console_handler_date_format,
+            color=console_handler_color,
         )
-        console_handler.setFormatter(console_formatter)
+        console_handler.setFormatter(console_handler_format)
         logger.addHandler(console_handler)
 
-    # Log file
-    if logfile_file != None:
-        # Create log file handler
-        try:
-            logfile_handler = logging.FileHandler(
-                logfile_file, mode="a" if (logfile_truncate == False) else "w"
-            )
-        except Exception as exception:
-            raise Exception(
-                "failed to set up log file handler: %s" % str(exception)
-            ) from exception
-
-        # Set log file log level
-        try:
-            logfile_handler.setLevel(
-                logfile_log_level.upper()
-            )  # only accepts uppercase level names
-        except ValueError as valueerror:
-            raise ValueError(
-                "invalid log file log level: '%s'" % logfile_log_level
-            ) from valueerror
-
-        # Create and set formatter, add log file handler to logger
-        logfile_formatter = LogFormatter(
-            fmt=logfile_log_template,
-            color=logfile_log_color,
-            datefmt=logfile_log_datefmt,
-        )
-        logfile_handler.setFormatter(logfile_formatter)
-        logger.addHandler(logfile_handler)
-
+    if not logger:
+        print("Failed to setup logging, aborting.")
+        return
     # Return logger
     return logger
 
@@ -141,24 +145,25 @@ def setup_logging(
 def main():
     # Setup logging
     script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
-    if not setup_logging(
-        console_log_output="stdout",
-        console_log_level="warning",
-        console_log_color=True,
-        logfile_file=f"{script_name}.log",
-        logfile_log_level="debug",
-        logfile_log_color=False,
-        logfile_log_template="%(color_on)s[%(asctime)s] [%(threadName)s] [%(levelname)-8s] %(message)s%(color_off)s",
-    ):
-        print("Failed to setup logging, aborting.")
-        return 1
+
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(filename=f"{script_name}.log")
+    file_handler.setLevel(logging.DEBUG)
+
+
+    logger = setup_logger(
+        logger_name=script_name,
+        handlers=[console_handler, file_handler]
+    )
 
     # Log some messages
-    logging.debug("Debug message")
-    logging.info("Info message")
-    logging.warning("Warning message")
-    logging.error("Error message")
-    logging.critical("Critical message")
+    logger.debug("Debug message")
+    logger.info("Info message")
+    logger.warning("Warning message")
+    logger.error("Error message")
+    logger.critical("Critical message")
 
 
 # Call main function
