@@ -21,10 +21,9 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
 ]
 
-# dependencies = [
-#    "numpy",
-#    "my_module @ git+https://github.com/my_github/my_repo.git@tag", 
-# ]
+dependencies = [
+   "PyYAML==6.0.1", 
+]
 
 # If a module, then use fetch version from src/module_name/__init__.py
 [tool.setuptools.dynamic]
@@ -35,10 +34,10 @@ test = [
   "pytest >= 7.1.1",
 ]
 
-# [project.urls]
+[project.urls]
 # homepage = "https://example.com"
 # documentation = "https://readthedocs.org"
-# repository = "https://github.com"
+repository = "https://github.com/davidson-engineering/python-formatted-logging"
 # changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 # [project.scripts]

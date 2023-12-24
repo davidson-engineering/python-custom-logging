@@ -1,4 +1,4 @@
-__version__ = "0.1.2"
+__version__ = "1.0.0"
 
 
-from log_formatter.log_formatter import LogFormatter, setup_logging
+from log_formatter.log_formatter import LogFormatter, setup_logger

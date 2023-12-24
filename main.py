@@ -12,30 +12,36 @@ import os
 import logging
 import sys
 
-from log_formatter import setup_logging
+from log_formatter import setup_logger
 
 
 # Main function
 def main():
     # Setup logging
     script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
-    if not setup_logging(
-        console_log_output="stdout",
-        console_log_level="warning",
-        console_log_color=True,
-        logfile_file=f"{script_name}.log",
-        logfile_log_level="debug",
-        logfile_log_color=False,
-    ):
-        print("Failed to setup logging, aborting.")
-        return 1
+
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(filename=f"{script_name}.log")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
+            datefmt="%Y/%m/%d %H:%M:%S",
+        )
+    )
+
+    logger = setup_logger(
+        logger_name=script_name, handlers=[console_handler, file_handler]
+    )
 
     # Log some messages
-    logging.debug("Debug message")
-    logging.info("Info message")
-    logging.warning("Warning message")
-    logging.error("Error message")
-    logging.critical("Critical message")
+    logger.debug("Debug message")
+    logger.info("Info message")
+    logger.warning("Warning message")
+    logger.error("Error message")
+    logger.critical("Critical message")
 
 
 # Call main function
