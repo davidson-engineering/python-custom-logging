@@ -1,2 +1,0 @@
--e git+https://github.com/davidson-engineering/python-formatted-logging.git@ad8cbf159708f4702f88ba0dda7e8bcc78ed4f09#egg=log_formatter
-PyYAML==6.0.1
