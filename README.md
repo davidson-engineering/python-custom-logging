@@ -7,7 +7,7 @@ from custom_logging import setup_logger, ColoredLogFormatter
 script_name = 'my_script.py'
 
 console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(logging.warning)
+console_handler.setLevel(logging.WARNING)
 
 file_handler = logging.FileHandler(filename=f"{script_name}.log")
 file_handler.setLevel(logging.DEBUG)
