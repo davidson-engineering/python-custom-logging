@@ -10,7 +10,7 @@ Based on original code by fonic - https://github.com/fonic
 """
 # ---------------------------------------------------------------------------
 
-__all__ = ["setup_logging"]
+__all__ = ["setup_logger"]
 
 from typing import Union
 import sys
