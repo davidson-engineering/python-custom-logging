@@ -27,7 +27,7 @@ dependencies = [
 
 # If a module, then use fetch version from src/module_name/__init__.py
 [tool.setuptools.dynamic]
-version = {attr = "log_formatter.__version__"}
+version = {attr = "custom_logging.__version__"}
 
 [project.optional-dependencies]
 test = [
@@ -37,7 +37,7 @@ test = [
 [project.urls]
 # homepage = "https://example.com"
 # documentation = "https://readthedocs.org"
-repository = "https://github.com/davidson-engineering/python-formatted-logging"
+repository = "https://github.com/davidson-engineering/python-custom-logging"
 # changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 # [project.scripts]
