@@ -2,7 +2,7 @@
 A module to simplyfy customized logging to the console and to a log file
 
 ```python
-from custom_logging import setup_logger
+from custom_logging import setup_logger, ColoredLogFormatter
 
 script_name = 'my_script.py'
 
@@ -14,7 +14,7 @@ file_handler.setLevel(logging.DEBUG)
 
 # set the log format for the file handler
 file_handler.setFormatter(
-    logging.Formatter(
+    ColoredLogFormatter(
         fmt="%(asctime)s,%(msecs)d - %(name)s - %(levelname)-8s - %(message)s",
         datefmt="%Y/%m/%d %H:%M:%S",
     )
