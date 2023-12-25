@@ -45,18 +45,20 @@ def load_default_settings_global(filename: str = "default_settings.yaml"):
 # Logging formatter supporting colored output
 class ColoredLogFormatter(logging.Formatter):
     COLOR_CODES = {
-        logging.CRITICAL: "\033[1;35m",  # bright/bold magenta
+        logging.CRITICAL: "\033[1;97;41m",  # bright/bold magenta
         logging.ERROR: "\033[1;31m",  # bright/bold red
-        logging.WARNING: "\033[1;33m",  # bright/bold yellow
-        logging.INFO: "\033[1;37m",  # bright/bold white
-        logging.DEBUG: "\033[0;37m",  # white / light gray
+        logging.WARNING: "\033[0;33m",  # bright/bold yellow
+        logging.INFO: "\033[0;37m",  # bright/bold white
+        logging.DEBUG: "\033[2;37m",  # white / light gray
     }
 
     RESET_CODE = "\033[0m"
 
-    def __init__(self, *args, color=False, **kwargs):
+    def __init__(self, *args, color=True, fmt=None, datefmt=None, **kwargs):
         self.color = color
-        super().__init__(*args, **kwargs)
+        if self.color:
+            fmt = f"%(color_on)s{fmt}%(color_off)s"
+        super().__init__(*args, fmt=fmt, datefmt=datefmt, **kwargs)
 
     def format(self, record, *args, **kwargs):
         if self.color == True and record.levelno in self.COLOR_CODES:
@@ -77,6 +79,15 @@ def setup_logger(
     handlers: list = None,
     default_settings: Union[str, dict] = None,
 ):
+    """
+    Setup a logger, attach the handlers specified in the handlers list. Assign default formatter to handlers if not specified.
+    :param logger_name: Name of the logger to be created. If None, the root logger will be used.
+    :param default_handler_format: Formatter to be used for handlers if not specified.
+    :param handlers: List of handlers to be attached to the logger.
+    :param default_settings: Path to a yaml file containing default settings for the logger. Can also be a dict of the settings
+    :return: logger
+    """
+    "TODO: Add dataclasses for default_settings to ensure correct format"
     # Create logger
     logger = logging.getLogger(logger_name)
 
@@ -86,6 +97,11 @@ def setup_logger(
     if default_settings is None:
         default_settings = load_default_settings_global()
     elif isinstance(default_settings, str):
+        # check if file exists
+        if not os.path.isfile(default_settings):
+            raise IncorrectSettingsError(
+                f"Specified default_settings file does not exist: {default_settings}"
+            )
         default_settings = load_yaml(default_settings)
     else:
         try:
@@ -103,20 +119,19 @@ def setup_logger(
             "default_settings must follow the format of default_settings.yaml"
         )
 
+    # Add handlers to logger
     if handlers:
         for handler in handlers:
             if handler.formatter is None:
                 handler.setFormatter(default_handler_format)
             logger.addHandler(handler)
     else:
-        # Create console handler
+        # If no handlers are specified, then create console handler as default
         handler = logging.StreamHandler(**default_settings["streamHandler"])
-        handler_format = ColoredLogFormatter(
-            **default_settings["logFormatter"]["streamHandler"]
-        )
-        handler.setFormatter(handler_format)
+        handler.setFormatter(default_handler_format)
         logger.addHandler(handler)
 
+    # Check if logger was created, if not then raise an exception
     if not logger:
         raise LoggerCreationError("Failed to setup logging, aborting.")
     # Return logger

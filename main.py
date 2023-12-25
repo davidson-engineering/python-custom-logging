@@ -28,7 +28,6 @@ def main():
         ColoredLogFormatter(
             fmt="%(asctime)s,%(msecs)d - %(name)s - %(levelname)-8s - %(message)s",
             datefmt="%Y/%m/%d %H:%M:%S",
-            color=True,
         )
     )
 
@@ -37,8 +36,8 @@ def main():
 
     # set the log format for the file handler
     file_handler.setFormatter(
-        ColoredLogFormatter(
-            fmt="%(asctime)s,%(msecs)d - %(name)s - %(levelname)-8s - %(message)s",
+        logging.Formatter(
+            fmt="%(asctime)s,%(msecs)03d - %(name)s - %(levelname)-8s - %(message)s",
             datefmt="%Y/%m/%d %H:%M:%S",
         )
     )
@@ -67,12 +66,15 @@ def main():
     )
     file_handler.setLevel(logging.DEBUG)
     # Set the log format
-    default_formatter = ColoredLogFormatter(
-        fmt="%(asctime)s | %(message)s",
+    stream_formatter = ColoredLogFormatter(
+        fmt="%(asctime)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S", color=True
+    )
+    console_handler.setFormatter(stream_formatter)
+    file_formatter = logging.Formatter(
+        fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
         datefmt="%Y/%m/%d %H:%M:%S",
     )
-    console_handler.setFormatter(default_formatter)
-    file_handler.setFormatter(default_formatter)
+    file_handler.setFormatter(file_formatter)
 
     timedrot_logger = setup_logger(
         logger_name=script_name,

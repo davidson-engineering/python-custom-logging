@@ -1,10 +1,6 @@
 [project]
 name = "custom_logging"
 description = "A module to simplyfy customized logging to the console and to a log file"
-
-# If a project, then you can specify version here
-# version = "0.0.0"
-# If a module, then fetch version dynamically (see [tool.setuptools.dynamic] below)
 dynamic = ["version"]
 
 readme = "README.md"
@@ -31,7 +27,7 @@ dependencies = [
    "PyYAML==6.0.1", 
 ]
 
-# If a module, then use fetch version from src/module_name/__init__.py
+
 [tool.setuptools.dynamic]
 version = {attr = "custom_logging.__version__"}
 
