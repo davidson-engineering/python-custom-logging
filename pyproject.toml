@@ -1,6 +1,6 @@
 [project]
-name = "log_formatter"
-description = "A module to enable customized logging to the console and to a log file"
+name = "custom_logging"
+description = "A module to simplyfy customized logging to the console and to a log file"
 
 # If a project, then you can specify version here
 # version = "0.0.0"
@@ -31,7 +31,7 @@ version = {attr = "log_formatter.__version__"}
 
 [project.optional-dependencies]
 test = [
-  "pytest >= 7.1.1",
+  "pytest >= 7.4.3",
 ]
 
 [project.urls]

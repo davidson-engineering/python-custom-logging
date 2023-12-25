@@ -5,16 +5,14 @@
 # Created Date: 2023-11-22
 # ---------------------------------------------------------------------------
 """
-A module to enable customized logging to the console and to a log file.
+A module to simplyfy customized logging to the console and to log files.
 Based on original code by fonic - https://github.com/fonic
 """
 # ---------------------------------------------------------------------------
 
-# - Extend 'setup_logging()' to create directory path for logfile -> see code
-#   in 'write_file()', 'module_miscellaneous.py'
-
 __all__ = ["setup_logging"]
 
+from typing import Union
 import sys
 import logging
 import os
@@ -25,22 +23,27 @@ class LoggerCreationError(Exception):
     pass
 
 
+class IncorrectSettingsError(Exception):
+    pass
+
+
 def get_current_directory():
     return os.path.dirname(os.path.realpath(__file__))
 
 
-def load_parameters_from_yaml(yaml_file):
-    filepath = os.path.join(get_current_directory(), yaml_file)
+def load_yaml(filepath: str):
     with open(filepath, "r") as f:
-        params = safe_load(f)
-    return params
+        content = safe_load(f)
+    return content
 
 
-default_params = load_parameters_from_yaml("default_parameters.yaml")
+def load_default_settings_global(filename: str = "default_settings.yaml"):
+    filepath = os.path.join(get_current_directory(), filename)
+    return load_yaml(filepath)
 
 
 # Logging formatter supporting colored output
-class LogFormatter(logging.Formatter):
+class ColoredLogFormatter(logging.Formatter):
     COLOR_CODES = {
         logging.CRITICAL: "\033[1;35m",  # bright/bold magenta
         logging.ERROR: "\033[1;31m",  # bright/bold red
@@ -51,9 +54,9 @@ class LogFormatter(logging.Formatter):
 
     RESET_CODE = "\033[0m"
 
-    def __init__(self, *args, color, **kwargs):
+    def __init__(self, *args, color=False, **kwargs):
         self.color = color
-        super(LogFormatter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def format(self, record, *args, **kwargs):
         if self.color == True and record.levelno in self.COLOR_CODES:
@@ -63,21 +66,41 @@ class LogFormatter(logging.Formatter):
             record.color_on = ""
             record.color_off = ""
         record.levelname2 = record.levelname.capitalize()
-        return super(LogFormatter, self).format(record, *args, **kwargs)
+        return super().format(record, *args, **kwargs)
 
 
 # Setup logging
 # NOTE: logger_name == None -> root logger
-def setup_logger(logger_name=None, default_handler_format=None, handlers=None):
+def setup_logger(
+    logger_name: str = None,
+    default_handler_format: Union[logging.Formatter, ColoredLogFormatter] = None,
+    handlers: list = None,
+    default_settings: Union[str, dict] = None,
+):
     # Create logger
     logger = logging.getLogger(logger_name)
 
     # Set global log level to 'debug' (required for handler levels to work)
     logger.setLevel(logging.DEBUG)
 
-    if default_handler_format is None:
-        default_handler_format = LogFormatter(
-            **default_params["logFormatter"]["streamHandler"]
+    if default_settings is None:
+        default_settings = load_default_settings_global()
+    elif isinstance(default_settings, str):
+        default_settings = load_yaml(default_settings)
+    else:
+        try:
+            assert isinstance(default_settings, dict)
+        except AssertionError:
+            raise IncorrectSettingsError("default_settings must be a dict")
+
+    try:
+        if default_handler_format is None:
+            default_handler_format = ColoredLogFormatter(
+                **default_settings["logFormatter"]["streamHandler"]
+            )
+    except KeyError:
+        raise IncorrectSettingsError(
+            "default_settings must follow the format of default_settings.yaml"
         )
 
     if handlers:
@@ -87,9 +110,9 @@ def setup_logger(logger_name=None, default_handler_format=None, handlers=None):
             logger.addHandler(handler)
     else:
         # Create console handler
-        handler = logging.StreamHandler(**default_params["streamHandler"])
-        handler_format = LogFormatter(
-            **default_params["log_formatter"]["streamHandler"]
+        handler = logging.StreamHandler(**default_settings["streamHandler"])
+        handler_format = ColoredLogFormatter(
+            **default_settings["logFormatter"]["streamHandler"]
         )
         handler.setFormatter(handler_format)
         logger.addHandler(handler)
@@ -111,7 +134,7 @@ def main():
     file_handler = logging.FileHandler(filename=f"{script_name}.log")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(
-        logging.Formatter(
+        ColoredLogFormatter(
             fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             datefmt="%Y/%m/%d %H:%M:%S",
         )
