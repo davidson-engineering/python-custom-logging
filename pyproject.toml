@@ -8,7 +8,7 @@ description = "A module to simplyfy customized logging to the console and to a l
 dynamic = ["version"]
 
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
   {email = "matthew@davidson.engineering"},
@@ -18,7 +18,14 @@ authors = [
 classifiers = [
     "Development Status :: 1 - Planning",
     "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 dependencies = [
