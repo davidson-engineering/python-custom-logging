@@ -5,6 +5,7 @@ from io import StringIO
 import pytest
 from custom_logging.custom_logging import setup_logger
 import uuid
+import atexit
 
 
 @pytest.fixture
@@ -16,16 +17,31 @@ def captured_stdout():
     sys.stdout = sys.__stdout__
 
 
+def log_file_cleanup(log_file):
+    if os.path.exists(log_file):
+        os.remove(log_file)
+
+
+def close_file_handles(log_file):
+    for handler in logging.getLogger().handlers:
+        if (
+            isinstance(handler, logging.FileHandler)
+            and handler.baseFilename == log_file
+        ):
+            handler.close()
+
+
 @pytest.fixture
 def log_file_path(request):
     # Fixture to provide the log file path and cleanup after the test
-    log_file = str(uuid.uuid4())
+    log_file = f"{str(uuid.uuid4())}.log"
     yield log_file
     # Remove the log file created during the test
     if os.path.exists(log_file):
         os.remove(log_file)
     # Register a finalizer to ensure cleanup even if an exception occurs
-    request.addfinalizer(lambda: os.path.exists(log_file) and os.remove(log_file))
+    request.addfinalizer(lambda: atexit.register(close_file_handles, log_file))
+    request.addfinalizer(lambda: log_file_cleanup(log_file))
 
 
 def test_setup_logging_console_output(captured_stdout):
