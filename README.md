@@ -40,9 +40,6 @@ Critical: Critical message
 ```
 <i>logfile.log</i> output
 ```
-2023/12/24 21:02:45,470 - main - DEBUG    - Debug message
-2023/12/24 21:02:45,471 - main - INFO     - Info message
-2023/12/24 21:02:45,471 - main - WARNING  - Warning message
-2023/12/24 21:02:45,472 - main - ERROR    - Error message
-2023/12/24 21:02:45,472 - main - CRITICAL - Critical message
+![image](https://github.com/davidson-engineering/python-custom-logging/assets/106140501/98f9ab2d-46a0-400b-9949-0e45317c8335)
+
 ```
