@@ -6,6 +6,7 @@ import pytest
 from custom_logging.custom_logging import setup_logger
 import uuid
 import atexit
+import time
 
 
 @pytest.fixture
@@ -39,6 +40,9 @@ def log_file_path(request):
 
     # Register a finalizer to ensure cleanup even if an exception occurs
     request.addfinalizer(lambda: atexit.register(close_file_handles, log_file))
+
+    time.sleep(1)
+
     request.addfinalizer(lambda: log_file_cleanup(log_file))
 
 
