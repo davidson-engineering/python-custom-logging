@@ -4,7 +4,7 @@ A module to simplyfy customized logging to the console and to a log file
 ```python
 from custom_logging import setup_logger, ColoredLogFormatter
 
-script_name = 'my_script.py'
+script_name = 'my_script'
 
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setLevel(logging.WARNING)
@@ -38,7 +38,7 @@ Warning: Warning message
 Error: Error message
 Critical: Critical message
 ```
-<i>my_script.py.log</i> output\
+<i>my_script.log</i> output\
 ![image](https://github.com/davidson-engineering/python-custom-logging/assets/106140501/69ee7316-edd8-4f58-9075-59c558909625)
 
 
