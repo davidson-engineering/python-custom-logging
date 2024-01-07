@@ -19,7 +19,7 @@ import os
 from yaml import safe_load
 
 
-class LoggerCreationError(Exception):
+class CreateLoggerError(Exception):
     pass
 
 
@@ -133,7 +133,7 @@ def setup_logger(
 
     # Check if logger was created, if not then raise an exception
     if not logger:
-        raise LoggerCreationError("Failed to setup logging, aborting.")
+        raise CreateLoggerError("Failed to setup logging, aborting.")
     # Return logger
     return logger
 
