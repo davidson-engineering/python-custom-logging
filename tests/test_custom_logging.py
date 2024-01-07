@@ -36,9 +36,7 @@ def log_file_path(request):
     # Fixture to provide the log file path and cleanup after the test
     log_file = f"{str(uuid.uuid4())}.log"
     yield log_file
-    # Remove the log file created during the test
-    if os.path.exists(log_file):
-        os.remove(log_file)
+
     # Register a finalizer to ensure cleanup even if an exception occurs
     request.addfinalizer(lambda: atexit.register(close_file_handles, log_file))
     request.addfinalizer(lambda: log_file_cleanup(log_file))
