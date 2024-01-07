@@ -4,6 +4,7 @@ import sys
 from io import StringIO
 import pytest
 from custom_logging.custom_logging import setup_logger
+import uuid
 
 
 @pytest.fixture
@@ -18,7 +19,7 @@ def captured_stdout():
 @pytest.fixture
 def log_file_path(request):
     # Fixture to provide the log file path and cleanup after the test
-    log_file = "your_script_name.log"
+    log_file = str(uuid.uuid4())
     yield log_file
     # Remove the log file created during the test
     if os.path.exists(log_file):
