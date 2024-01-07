@@ -39,7 +39,8 @@ Error: Error message
 Critical: Critical message
 ```
 <i>logfile.log</i> output\
-![image](https://github.com/davidson-engineering/python-custom-logging/assets/106140501/1e414d59-b0f5-495d-a3f5-530dec34103a)
+![image](https://github.com/davidson-engineering/python-custom-logging/assets/106140501/69ee7316-edd8-4f58-9075-59c558909625)
+
 
 
 
