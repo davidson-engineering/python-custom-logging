@@ -38,7 +38,7 @@ Warning: Warning message
 Error: Error message
 Critical: Critical message
 ```
-<i>logfile.log</i> output
+<i>logfile.log</i> output \
 ![image](https://github.com/davidson-engineering/python-custom-logging/assets/106140501/98f9ab2d-46a0-400b-9949-0e45317c8335)
 
 
