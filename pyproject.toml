@@ -28,6 +28,8 @@ dependencies = [
    "PyYAML==6.0.1", 
 ]
 
+[tool.setuptools]
+include-package-data = true # true by default
 
 [tool.setuptools.dynamic]
 version = {attr = "custom_logging.__version__"}
@@ -36,6 +38,10 @@ version = {attr = "custom_logging.__version__"}
 test = [
   "pytest >= 7.4.3",
 ]
+
+# Include non-python files located in src/package_name in the distribution
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.urls]
 # homepage = "https://example.com"
