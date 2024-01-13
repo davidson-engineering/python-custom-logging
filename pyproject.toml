@@ -1,6 +1,6 @@
 [project]
 name = "custom_logging"
-description = "A module to simplyfy customized logging to the console and to a log file"
+description = "A module to simplify setup of logging in Python"
 dynamic = ["version"]
 
 readme = "README.md"
@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -44,16 +45,4 @@ test = [
 where = ["src"]
 
 [project.urls]
-# homepage = "https://example.com"
-# documentation = "https://readthedocs.org"
 repository = "https://github.com/davidson-engineering/python-custom-logging"
-# changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
-
-# [project.scripts]
-# spam-cli = "spam:main_cli"
-
-# [project.gui-scripts]
-# spam-gui = "spam:main_gui"
-
-# [project.entry-points."spam.magical"]
-# tomatoes = "spam:main_tomatoes"
