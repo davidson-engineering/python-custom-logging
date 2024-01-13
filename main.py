@@ -6,7 +6,7 @@
 # version ='1.0'
 # ---------------------------------------------------------------------------
 """
-Demonstration code for A module to enable convinient access to customized logging to the console and to log files.
+Demonstration code for a module to enable convienient access to customized logging to the console and to log files.
 """
 # ---------------------------------------------------------------------------
 
