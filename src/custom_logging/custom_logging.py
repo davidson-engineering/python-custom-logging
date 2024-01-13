@@ -5,7 +5,7 @@
 # Created Date: 2023-11-22
 # ---------------------------------------------------------------------------
 """
-A module to simplyfy customized logging to the console and to log files.
+A module to simplify logging setup in Python.
 Based on original code by fonic - https://github.com/fonic
 """
 # ---------------------------------------------------------------------------
