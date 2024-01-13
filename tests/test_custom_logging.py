@@ -6,7 +6,6 @@ import pytest
 from custom_logging.custom_logging import setup_logger
 import uuid
 import atexit
-import time
 
 
 @pytest.fixture
@@ -82,3 +81,66 @@ def test_log_messages(capsys, log_file_path):
         assert (
             "Test info message" in log_file_content
         ), "Expected log message not found in log file"
+
+
+def test_log_with_custom_settings_file(capsys, log_file_path):
+    file_handler = logging.FileHandler(filename=log_file_path)
+    console_handler = logging.StreamHandler(sys.stdout)
+    logger = setup_logger(
+        handlers=[file_handler, console_handler],
+        default_settings="tests/test_settings.yaml",
+    )
+
+    # Log a message
+    logger.info("Test info message")
+
+    # Check the content of the captured console output
+    captured = capsys.readouterr()
+    logged_output = captured.out.strip()
+    assert (
+        "Test info message" in logged_output
+    ), "Expected log message not found in console output"
+
+    # Check the content of the log file
+    with open(log_file_path, "r") as log_file:
+        log_file_content = log_file.read()
+        assert (
+            "Test info message" in log_file_content
+        ), "Expected log message not found in log file"
+
+
+def test_log_without_custom_settings_file(capsys, log_file_path):
+    file_handler = logging.FileHandler(filename=log_file_path)
+    console_handler = logging.StreamHandler(sys.stdout)
+    logger = setup_logger(handlers=[file_handler, console_handler])
+
+    # Log a message
+    logger.info("Test info message")
+
+    # Check the content of the captured console output
+    captured = capsys.readouterr()
+    logged_output = captured.out.strip()
+    assert (
+        "Test info message" in logged_output
+    ), "Expected log message not found in console output"
+
+    # Check the content of the log file
+    with open(log_file_path, "r") as log_file:
+        log_file_content = log_file.read()
+        assert (
+            "Test info message" in log_file_content
+        ), "Expected log message not found in log file"
+
+
+def test_create_logger_using_type(capsys):
+    logger = setup_logger(handlers=[logging.StreamHandler])
+    assert isinstance(logger, logging.Logger)
+
+
+def test_create_logger_using_type_with_formatter(capsys):
+    logger = setup_logger(
+        handlers=[logging.StreamHandler],
+        default_settings="tests/test_settings.yaml",
+    )
+    assert isinstance(logger, logging.Logger)
+    assert logger.name == "root"

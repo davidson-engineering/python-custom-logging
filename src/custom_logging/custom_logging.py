@@ -10,7 +10,7 @@ Based on original code by fonic - https://github.com/fonic
 """
 # ---------------------------------------------------------------------------
 
-__all__ = ["setup_logger"]
+__all__ = ["setup_logger", "ColoredLogFormatter"]
 
 from typing import Union
 import sys
@@ -18,12 +18,18 @@ import logging
 import os
 from yaml import safe_load
 
+module_logger = logging.getLogger(__name__)
+
 
 class CreateLoggerError(Exception):
     pass
 
 
 class IncorrectSettingsError(Exception):
+    pass
+
+
+class HandlerTypeError(Exception):
     pass
 
 
@@ -108,27 +114,39 @@ def setup_logger(
             assert isinstance(default_settings, dict)
         except AssertionError:
             raise IncorrectSettingsError("default_settings must be a dict")
-
-    try:
-        if default_handler_format is None:
-            default_handler_format = ColoredLogFormatter(
-                **default_settings["logFormatter"]["streamHandler"]
-            )
-    except KeyError:
-        raise IncorrectSettingsError(
-            "default_settings must follow the format of default_settings.yaml"
-        )
-
     # Add handlers to logger
-    if handlers:
-        for handler in handlers:
-            if handler.formatter is None:
-                handler.setFormatter(default_handler_format)
-            logger.addHandler(handler)
-    else:
-        # If no handlers are specified, then create console handler as default
-        handler = logging.StreamHandler(**default_settings["streamHandler"])
-        handler.setFormatter(default_handler_format)
+    for handler in handlers or [
+        logging.StreamHandler(**default_settings["StreamHandler"])
+    ]:
+        # Get name of handler type
+        # If handler is a type, then create an instance of the handler type using the default settings
+        if isinstance(handler, type):
+            handler_type = handler.__name__
+            try:
+                handler = handler(**default_settings[handler_type])
+            except KeyError:
+                raise IncorrectSettingsError(
+                    f"No default settings found for handler type: {handler_type}"
+                )
+        elif isinstance(handler, logging.Handler):
+            handler_type = type(handler).__name__
+        else:
+            raise HandlerTypeError(
+                f"Handler must be a type or an instance of logging.Handler, not {type(handler)}"
+            )
+
+        if handler.formatter is None:
+            # If no default formatter is specified, then use the default formatter for the handler type
+            # If no default settings are found for the handler type, then use the basic formatter
+            default_handler_format_params = default_settings["Formatter"].get(
+                handler_type, default_settings["Formatter"]["BasicFormatter"]
+            )
+
+            default_handler_format = ColoredLogFormatter(
+                **default_handler_format_params
+            )
+            handler.setFormatter(default_handler_format)
+
         logger.addHandler(handler)
 
     # Check if logger was created, if not then raise an exception
