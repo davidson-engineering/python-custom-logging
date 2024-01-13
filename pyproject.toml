@@ -1,6 +1,6 @@
 [project]
 name = "custom_logging"
-description = "A module to simplify setup of logging in Python"
+description = "A module to simplify logging setup in Python"
 dynamic = ["version"]
 
 readme = "README.md"
