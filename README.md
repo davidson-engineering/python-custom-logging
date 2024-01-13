@@ -1,6 +1,6 @@
 # python-custom-logging
 ## Purpose
-A module to simplyfy customized logging to the console and to a log file
+A module to simplify customized logging to the console and to a log file
 
 ## Installation
 
@@ -52,6 +52,13 @@ Critical: Critical message
 
 ## Best Practices for Multi-module Usage
 
+Use the <i>\_\_name\_\_</i> variable so that the logger in each module is uniquely identifiable.
+
+The logger name can then be referenced by adding the <i>name</i> attribute to the <i>fmt</i> parameter when initiliasing a <i>logging.Formatter</i> object.
+
+This allows clear identification of the which module the log was made from.
+
+A simple example is shown below:
 ### module1.py
 ```python
 import logging
@@ -79,9 +86,11 @@ from custom_logging import setup_logger
 
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setLevel(logging.WARNING)
+console_handler.setFormatter(logging.Formatter("%(name)s: %(levelname)s - %(message)s"))
 
 file_handler = logging.FileHandler(filename=f"debug.log")
 file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(logging.Formatter("%(name)s: %(levelname)s - %(message)s"))
 
 logger = setup_logger(
     logger_name="main.py",
@@ -89,5 +98,19 @@ logger = setup_logger(
 )
 
 logger.info("logger initialised")
+
+```
+### Console Output
+```console
+module1: WARNING - Warning message
+module2: ERROR - Error message
+```
+### <i>debug.log</i> Output
+```log
+root: INFO - logger initialised
+module1: WARNING - Warning message
+module1: DEBUG - Debug message
+module2: ERROR - Error message
+module2: DEBUG - Debug message
 
 ```
