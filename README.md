@@ -1,6 +1,6 @@
 # python-custom-logging
 ## Purpose
-A module to simplify customized logging to the console and to a log file
+A module to simplify the setup of logging in Python
 
 ## Installation
 
